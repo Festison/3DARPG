@@ -1,3 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Button text="버튼" display-tooltip-when-elided="true" name="UIBtn" usage-hints="None" focusable="true" style="width: 80px; height: 80px; -unity-background-image-tint-color: rgba(255, 254, 254, 255); translate: 100px 100px; -unity-text-align: middle-center; white-space: nowrap; transform-origin: center; justify-content: flex-start; position: relative; left: auto; opacity: 1; display: flex; visibility: visible; overflow: hidden;" />
+    <ui:VisualElement style="height: 1078px; flex-direction: column;">
+        <ui:Button text="옵션" display-tooltip-when-elided="true" style="height: 110px; width: 113px; -unity-font: url(&apos;project://database/Assets/09.%20Texts/TextMesh%20Pro/Examples%20&amp;%20Extras/Fonts/Anton.ttf?fileID=12800000&amp;guid=997a43b767814dd0a7642ec9b78cba41&amp;type=3#Anton&apos;); font-size: 24px;" />
+        <ui:Button text="캐릭터 스텟 UI" display-tooltip-when-elided="true" style="height: 110px; width: 113px; font-size: 24px; translate: 1800px -100px; white-space: normal;" />
+        <ui:Button text="장비 UI" display-tooltip-when-elided="true" style="height: 110px; width: 113px; font-size: 24px; translate: 1650px -215px; white-space: normal;" />
+        <ui:Button text="플레이어 HP" display-tooltip-when-elided="true" style="translate: 400px 700px; height: 26px; width: 1027px; font-size: 24px;" />
+        <ui:Button text="플레이어 스킬 UI" display-tooltip-when-elided="true" style="height: 170px; width: 383px; font-size: 24px; translate: 1500px 520px; white-space: normal;" />
+    </ui:VisualElement>
 </ui:UXML>
