@@ -18,6 +18,7 @@ namespace Festison
         [Tooltip("가릴 화면")]
         public CanvasGroup fadeImage;
 
+        // 페이드 아웃이 진행되는 시간
         private float fadeDuration = 2;
 
         private void Start()
@@ -30,12 +31,14 @@ namespace Festison
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
+        // Dotween을 사용한 이벤트 함수와 람다식을 이용한 델리게이트 체인으로 이벤트를 엮어주었다. 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             fadeImage.DOFade(0, fadeDuration).OnStart(() => { Loading.SetActive(false); })
                 .OnComplete(() => { fadeImage.blocksRaycasts = false; });
         }
 
+        // 코루틴을 이용한 씬전환 이벤트 사용
         public void ChangeScene(string sceneName)
         {
 
@@ -43,6 +46,7 @@ namespace Festison
                 .OnComplete(() => { StartCoroutine("LoadScene", sceneName); });
         }
 
+        // 코루틴을 이요한 씬로드 비동기로 씬을 로드하며 로딩중 조작가능
         IEnumerator LoadScene(string sceneName)
         {
             Loading.SetActive(true);

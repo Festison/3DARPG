@@ -3,20 +3,21 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-namespace StarterAssets
+namespace Festison
 {
 	public class PlayerInputsystem : MonoBehaviour
 	{
-		[Header("Character Input Values")]
+		[Header("캐릭터 상태")]
 		public Vector2 move;
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool roll;
 
-		[Header("Movement Settings")]
+		[Header("움직임 셋팅")]
 		public bool analogMovement;
 
-		[Header("Mouse Cursor Settings")]
+		[Header("마우스 커서 셋팅")]
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
@@ -43,6 +44,11 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+
+		public void OnRoll(InputValue value)
+		{
+			RollInput(value.isPressed);
+		}
 #endif
 
 
@@ -64,6 +70,11 @@ namespace StarterAssets
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+		}
+
+		public void RollInput(bool newRollState)
+		{
+			roll = newRollState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
