@@ -52,20 +52,20 @@
                 },
                 {
                     "name": "DrawWeapon",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "d6c6a03f-c99f-44d3-8e16-536fba6f551c",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
                     "name": "Attack",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "cc778ada-6401-42a0-87f7-6192bb8d0943",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],
@@ -216,8 +216,8 @@
                 {
                     "name": "",
                     "id": "ac6d69ce-53b6-4933-b534-10cf4b264e29",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
+                    "path": "<Keyboard>/q",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "DrawWeapon",
@@ -228,7 +228,7 @@
                     "name": "",
                     "id": "d4d95d4e-82cf-4370-b8a0-9b65dc459531",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Attack",

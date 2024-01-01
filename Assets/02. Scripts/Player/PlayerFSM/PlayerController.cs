@@ -33,7 +33,7 @@ namespace Festison
         private float terminalVelocity = 53.0f;
         [Range(0.0f, 0.3f)]
         public float RotationSmoothTime = 0.12f;
-        public float SpeedChangeRate = 10.0f;       
+        public float SpeedChangeRate = 10.0f;
         public float JumpTimeout = 0.50f;
         public float FallTimeout = 0.15f;
         public float GroundedOffset = -0.14f;
@@ -43,7 +43,7 @@ namespace Festison
 
         [Header("플레이어 상태")]
         public bool Grounded = true;
-      
+
         public LayerMask GroundLayers;
 
         [Header("시네머신")]
@@ -53,7 +53,7 @@ namespace Festison
         public float CameraAngleOverride = 0.0f;
         public bool LockCameraPosition = false;
         private float cinemachineTargetYaw;
-        private float cinemachineTargetPitch;             
+        private float cinemachineTargetPitch;
 
         [Header("애니메이션 이름 인트형으로 변환")]
         private int animIDSpeed;
@@ -61,7 +61,7 @@ namespace Festison
         private int animIDJump;
         private int animIDFreeFall;
         private int animIDMotionSpeed;
-        private int animIDRoll;
+        public int animIDRoll;
 
 #if ENABLE_INPUT_SYSTEM 
         public PlayerInput playerInput;
@@ -74,6 +74,9 @@ namespace Festison
         public StateMachine playerStateMachine;
         public DefaultState defaultState;
         public JumpState jumpState;
+        public RollState rollState;
+        public CombatState combatState;
+        public AttackState attackState;
 
         private const float thersold = 0.01f;
 
@@ -118,7 +121,11 @@ namespace Festison
             playerStateMachine = new StateMachine();
             defaultState = new DefaultState(this, playerStateMachine);
             jumpState = new JumpState(this, playerStateMachine);
-            playerStateMachine.Initialize(defaultState);                  
+            rollState = new RollState(this, playerStateMachine);
+            combatState = new CombatState(this, playerStateMachine);
+            attackState = new AttackState(this, playerStateMachine);
+
+            playerStateMachine.Initialize(defaultState);
         }
 
         private void Update()
@@ -268,15 +275,10 @@ namespace Festison
 
         public void Roll()
         {
-            if (inputsystem.roll)
-            {
-                if (Animating)
-                {
-                    animator.SetTrigger(animIDRoll);
-                }
+            animator.applyRootMotion = true;
 
-                inputsystem.roll = false;
-            }            
+            if (Animating)
+                animator.Play(animIDRoll);
         }
 
         private void CameraRotation()
