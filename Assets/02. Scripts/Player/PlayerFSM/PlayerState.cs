@@ -103,8 +103,10 @@ public class JumpState : PlayerState
     {
         base.Update();
 
-        if (player.Grounded)
+        if (player.Grounded&& player.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Walk Run Blend"))
             stateMachine.ChangeState(player.defaultState);
+        else if(player.Grounded && player.animator.GetCurrentAnimatorStateInfo(1).IsName("CombatBleendTree"))
+            stateMachine.ChangeState(player.combatState);
     }
 
     public override void Exit()
@@ -144,7 +146,7 @@ public class RollState : PlayerState
 
 public class CombatState : PlayerState
 {
-    bool sheathWeapon;
+    bool sheathWeapon,attack;
     public CombatState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -154,12 +156,15 @@ public class CombatState : PlayerState
     {
         base.Enter();
         sheathWeapon = false;
+        attack = false;
     }
 
     public override void Update()
     {
         base.Update();
 
+        if (!player.Grounded)
+            stateMachine.ChangeState(player.jumpState);
         if (drawWeaponAction.triggered)
         {
             sheathWeapon = true;
@@ -169,6 +174,15 @@ public class CombatState : PlayerState
             player.animator.SetTrigger("sheathWeapon");
             player.animator.SetTrigger("default");
             stateMachine.ChangeState(player.defaultState);
+        }
+        if (attackAction.triggered)
+        {
+            attack = true;
+        }
+        if (attack)
+        {
+            player.animator.SetTrigger("attack");
+            stateMachine.ChangeState(player.attackState);
         }
     }
 
@@ -180,7 +194,7 @@ public class CombatState : PlayerState
 
 public class AttackState : PlayerState
 {
-    float timePassed;
+    float currentAttackTime;
     float clipLength;
     float clipSpeed;
     bool attack;
@@ -195,8 +209,8 @@ public class AttackState : PlayerState
         base.Enter();
 
         attack = false;
-        player.animator.applyRootMotion = true;
-        timePassed = 0f;
+        //player.animator.applyRootMotion = true;
+        currentAttackTime = 0f;
         player.animator.SetTrigger("attack");
         player.animator.SetFloat("Speed", 0f);
     }
@@ -206,15 +220,15 @@ public class AttackState : PlayerState
         if (attackAction.triggered)
             attack = true;
 
-        timePassed += Time.deltaTime;
+        currentAttackTime += Time.deltaTime;
         clipLength = player.animator.GetCurrentAnimatorClipInfo(1)[0].clip.length;
         clipSpeed = player.animator.GetCurrentAnimatorStateInfo(1).speed;
 
-        if (timePassed >= clipLength / clipSpeed && attack)
+        if (currentAttackTime >= clipLength / clipSpeed && attack)
         {
             stateMachine.ChangeState(player.attackState);
         }
-        if (timePassed >= clipLength / clipSpeed)
+        if (currentAttackTime >= clipLength / clipSpeed)
         {
             stateMachine.ChangeState(player.combatState);
             player.animator.SetTrigger("CombatIdle");
