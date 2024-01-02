@@ -10,6 +10,7 @@ public abstract class PlayerState
     public InputAction rollAction;
     public InputAction drawWeaponAction;
     public InputAction attackAction;
+    public InputAction dashAttackAction;
 
     public PlayerState(PlayerController player, StateMachine stateMachine)
     {
@@ -19,6 +20,7 @@ public abstract class PlayerState
         rollAction = player.playerInput.actions["Roll"];
         drawWeaponAction = player.playerInput.actions["DrawWeapon"];
         attackAction = player.playerInput.actions["Attack"];
+        dashAttackAction = player.playerInput.actions["DashAttack"];
     }
 
     public virtual void Enter()
@@ -51,7 +53,7 @@ public class DefaultState : PlayerState
     {
         base.Enter();
         roll = false;
-        drawWeapon = false;        
+        drawWeapon = false;
     }
 
     public override void Update()
@@ -61,9 +63,9 @@ public class DefaultState : PlayerState
         if (rollAction.triggered) // 구르기행동
         {
             roll = true;
-            player.Roll();  
+            player.Roll();
         }
-        if (drawWeaponAction.triggered)
+        if (drawWeaponAction.triggered) // 전투 상태 진입
         {
             drawWeapon = true;
         }
@@ -103,9 +105,9 @@ public class JumpState : PlayerState
     {
         base.Update();
 
-        if (player.Grounded&& player.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Walk Run Blend"))
+        if (player.Grounded && player.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Walk Run Blend"))
             stateMachine.ChangeState(player.defaultState);
-        else if(player.Grounded && player.animator.GetCurrentAnimatorStateInfo(1).IsName("CombatBleendTree"))
+        else if (player.Grounded && player.animator.GetCurrentAnimatorStateInfo(1).IsName("CombatBleendTree"))
             stateMachine.ChangeState(player.combatState);
     }
 
@@ -118,7 +120,7 @@ public class JumpState : PlayerState
 
 public class RollState : PlayerState
 {
-   
+
     public RollState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -131,7 +133,7 @@ public class RollState : PlayerState
     }
 
     public override void Update()
-    {             
+    {
         Debug.Log("상태 실행중" + this.ToString());
         if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("Rolling"))
             stateMachine.ChangeState(player.defaultState);
@@ -146,7 +148,7 @@ public class RollState : PlayerState
 
 public class CombatState : PlayerState
 {
-    bool sheathWeapon,attack;
+    bool sheathWeapon, attack, dashAttack;
     public CombatState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -157,6 +159,7 @@ public class CombatState : PlayerState
         base.Enter();
         sheathWeapon = false;
         attack = false;
+        dashAttack = false;
     }
 
     public override void Update()
@@ -184,6 +187,15 @@ public class CombatState : PlayerState
             player.animator.SetTrigger("attack");
             stateMachine.ChangeState(player.attackState);
         }
+        if (dashAttackAction.triggered)
+        {
+            dashAttack = true;
+        }
+        if (dashAttack)
+        {
+            player.animator.Play("DashAttack");
+            stateMachine.ChangeState(player.dashAttackState);
+        }
     }
 
     public override void Exit()
@@ -209,7 +221,7 @@ public class AttackState : PlayerState
         base.Enter();
 
         attack = false;
-        //player.animator.applyRootMotion = true;
+        player.animator.applyRootMotion = true;
         currentAttackTime = 0f;
         player.animator.SetTrigger("attack");
         player.animator.SetFloat("Speed", 0f);
@@ -243,7 +255,36 @@ public class AttackState : PlayerState
     }
 }
 
+public class DashAttackState : PlayerState
+{
+    public DashAttackState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
+    {
+        this.player = player;
+        this.stateMachine = stateMachine;
+    }
 
+    public override void Enter()
+    {
+        base.Enter();
+        player.animator.applyRootMotion = true;
+    }
+
+    public override void Update()
+    {
+        Debug.Log("Stating" + this.ToString());
+        player.animator.SetTrigger("CombatIdle");
+        if (!player.animator.GetCurrentAnimatorStateInfo(1).IsName("DashAttack"))
+        {
+            stateMachine.ChangeState(player.combatState);           
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        player.animator.applyRootMotion = false;
+    }
+}
 
 
 

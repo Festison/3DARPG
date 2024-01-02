@@ -77,6 +77,7 @@ namespace Festison
         public RollState rollState;
         public CombatState combatState;
         public AttackState attackState;
+        public DashAttackState dashAttackState;
 
         private const float thersold = 0.01f;
 
@@ -117,13 +118,14 @@ namespace Festison
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif          
-
+            
             playerStateMachine = new StateMachine();
             defaultState = new DefaultState(this, playerStateMachine);
             jumpState = new JumpState(this, playerStateMachine);
             rollState = new RollState(this, playerStateMachine);
             combatState = new CombatState(this, playerStateMachine);
             attackState = new AttackState(this, playerStateMachine);
+            dashAttackState = new DashAttackState(this, playerStateMachine);
 
             playerStateMachine.Initialize(defaultState);
         }
