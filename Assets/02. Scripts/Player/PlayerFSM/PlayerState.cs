@@ -245,8 +245,6 @@ public class AttackState : PlayerState
             stateMachine.ChangeState(player.combatState);
             player.animator.SetTrigger("CombatIdle");
         }
-
-
     }
     public override void Exit()
     {
