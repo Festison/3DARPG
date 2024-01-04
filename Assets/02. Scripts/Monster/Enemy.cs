@@ -9,75 +9,65 @@ public class Enemy : Character, IAttackable, IHitable
 
     [Header("Combat")]
     [SerializeField] float attackCD = 3f;
-    [SerializeField] float attackRange = 1f;
-    [SerializeField] float aggroRange = 4f;
+    [SerializeField] float attackRange = 2f;
+    [SerializeField] float aggroRange = 6f;
 
-    GameObject player;
+    public Transform player;
     NavMeshAgent agent;
     Animator animator;
     float timePassed;
     float newDestinationCD = 0.5f;
+    public Vector3 startPosition;
+    
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = player.transform;
+        startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("speed", agent.velocity.magnitude / agent.speed);
+        // 움직일 때
+        animator.SetFloat("Move", agent.velocity.magnitude / agent.speed);
 
-        if (player == null)
+        if (player.Equals(null))
         {
             return;
         }
 
+        // 공격 범위
         if (timePassed >= attackCD)
         {
+            // 공격 딜레이
             if (Vector3.Distance(player.transform.position, transform.position) <= attackRange)
             {
-                animator.SetTrigger("attack");
+                animator.SetInteger("AttackIndex", Random.Range(1, 4));
+                animator.SetTrigger("Attack");
                 timePassed = 0;
             }
         }
         timePassed += Time.deltaTime;
-
+      
+        // 추적 범위 안에 들어왔을때
         if (newDestinationCD <= 0 && Vector3.Distance(player.transform.position, transform.position) <= aggroRange)
         {
+            Debug.Log("추적중");
             newDestinationCD = 0.5f;
             agent.SetDestination(player.transform.position);
         }
+
+        // 탐지 범위 보다 멀어졌을때
+        else if (Vector3.Distance(player.transform.position, transform.position) >= aggroRange)
+        {
+            Debug.Log("집가는 중");
+            agent.SetDestination(startPosition);
+        }
         newDestinationCD -= Time.deltaTime;
+
         transform.LookAt(player.transform);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            print(true);
-            player = collision.gameObject;
-        }
-    }
-
-    void Die()
-    {
-        //Instantiate(ragdoll, transform.position, transform.rotation);
-        Destroy(this.gameObject);
-    }
-
-    public void TakeDamage(float damageAmount)
-    {
-        health -= damageAmount;
-        animator.SetTrigger("damage");
-
-        if (health <= 0)
-        {
-            Die();
-        }
     }
 
     public void HitVFX(Vector3 hitPosition)

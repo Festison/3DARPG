@@ -270,6 +270,7 @@ public class DashAttackState : PlayerState
     public override void Update()
     {
         Debug.Log("Stating" + this.ToString());
+
         player.animator.SetTrigger("CombatIdle");
         if (!player.animator.GetCurrentAnimatorStateInfo(1).IsName("DashAttack"))
         {
