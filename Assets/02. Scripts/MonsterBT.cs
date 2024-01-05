@@ -28,18 +28,8 @@ namespace BT
 
         public INode.STATE Evaluate()
         {
-            if (actionNode == null)
-            {
-                return INode.STATE.FAIL;
-            }
-            else
-            {
-                return actionNode();
-            }
-
-            //return (actionNode == null) ? INode.STATE.FAIL : actionNode();
+            return (actionNode == null) ? INode.STATE.FAIL : actionNode();
         }
-
     }
 
     public class SelectorNode : INode
@@ -124,27 +114,26 @@ namespace BT
 
         [Header("액션 노드")]
         ActionNode returnAction;                     // 귀환 액션
-        ActionNode idleAction;                       // 대기 액션
-
-        [SerializeField]
-        Transform target = null;
-        Vector3 originPos;
 
         private NavMeshAgent navMesh;
         private Animator animator;
+        private float timePassed;
+        [SerializeField] private float newDestinationCoolTime = 0.5f;
 
         [Header("몬스터 탐지 정보")]
-        [SerializeField] private float attackCoolTime = 3f;
-        [SerializeField] private float attackableRange = 2f;
-        [SerializeField] private float defectiveRange = 6f;
-        private float timePassed;
-        private float newDestinationCoolTime = 0.5f;
+        [Tooltip("몬스터 공격 쿨타임")] [SerializeField] private float attackCoolTime = 3f;
+        [Tooltip("몬스터 공격 범위")] [SerializeField] private float attackableRange = 2f;
+        [Tooltip("몬스터 탐지 범위")] [SerializeField] private float defectiveRange = 6f;
+
+        [Header("몬스터가 알아야할 정보")]
+        [Tooltip("플레이어 위치")] [SerializeField] private Transform player = null;
+        [Tooltip("몬스터 시작 포인트")] [SerializeField] private Vector3 startPosition;
 
         void Start()
         {
             navMesh = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
-            originPos = transform.position;
+            startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             SetBT();
         }
 
@@ -165,10 +154,6 @@ namespace BT
             returnAction = new ActionNode(ReturnAction);                            // 귀환 액션을 생성
             rootNode.Add(returnAction);                                             // 귀환 액션을 루트 노드에 추가
 
-            // 대기 액션
-            idleAction = new ActionNode(IdleAction);                                // 대기 액션을 생성
-            rootNode.Add(idleAction);                                               // 대기 액션을 루트 노드에 추가
-
             attackSequence.Add(new ActionNode(AttackRangeCheckAction));             // 공격범위 체크 액션을 생성 후 공격 시퀀스에 추가
                                                                                     // 
             attackSortSelector = new SelectorNode();                                // 공격 방식 셀렉터 생성
@@ -179,113 +164,92 @@ namespace BT
             targetSettingSelector = new SelectorNode();                             // 타겟 설정 셀렉터 생성
             detectiveSequence.Add(targetSettingSelector);                           // 타겟 설정 셀렉터를 탐지 시퀀스에 추가
 
-            detectiveSequence.Add(new ActionNode(TraceAction));                     // 추적 액션을 탐지 시퀀스에 추가
-
-            // 공격 방식 셀렉터
-            attackSortSelector.Add(new ActionNode(SkillAttackAction));              // 스킬 공격하기 액션을 공격 셀렉터에추가
+            // 공격 방식 셀렉터              
             attackSortSelector.Add(new ActionNode(DefaultAttackAction));            // 기본 공격하기 액션을 공격 셀렉터에 추가
 
             // 타겟 설정 셀렉터      
-            targetSettingSelector.Add(new ActionNode(CloseEnemyTargetAciton));      // 근거리적 타겟 액션을 타겟 설정 셀렉터에 추가                 
+            targetSettingSelector.Add(new ActionNode(PlayerTargetAction));          // 플레이어를 타겟으로 설정하는 액션을 타겟 설정 셀렉터에 추가
         }
 
         #region 액션 노드에 들어갈 함수
 
-        INode.STATE SkillAttackAction()
-        {
-            Debug.Log("스킬 공격 중");
-
-            return INode.STATE.RUN;
-        }
-
         INode.STATE DefaultAttackAction()
         {
             Debug.Log("기본 공격 중");
+            animator.SetInteger("AttackIndex", UnityEngine.Random.Range(1, 4));
+            animator.SetTrigger("Attack");
+            timePassed = 0;
             return INode.STATE.RUN;
         }
-
-        INode.STATE CloseEnemyTargetAciton()
-        {
-            Debug.Log("근거리 적 타겟 중");
-            return INode.STATE.RUN;
-        }
-
 
         INode.STATE AttackRangeCheckAction()
         {
-            if (target == null)
+            if (player.Equals(null))
                 return INode.STATE.FAIL;
 
-            if (Vector3.Distance(transform.position, target.position) < attackableRange)
+            if (timePassed >= attackCoolTime)
             {
-                Debug.Log("공격 범위 감지 됨");
-                return INode.STATE.SUCCESS;
+                // 공격 딜레이
+                if (Vector3.Distance(player.transform.position, transform.position) <= attackableRange)
+                {
+                    return INode.STATE.SUCCESS;
+                }
             }
 
             return INode.STATE.FAIL;
         }
 
- 
+        INode.STATE PlayerTargetAction()
+        {          
+            if (newDestinationCoolTime <= 0 && Vector3.Distance(player.transform.position, transform.position) <= defectiveRange)
+            {
+                Debug.Log("근거리 적 타겟 중");
+                newDestinationCoolTime = 0.5f;
+                navMesh.SetDestination(player.transform.position);                
+                return INode.STATE.RUN;
+            }
+            return INode.STATE.RUN;
+        }
+
         INode.STATE DetectiveRangeCheckAction()
         {
             Collider[] cols = Physics.OverlapSphere(transform.position, defectiveRange, LayerMask.GetMask("Player"));
             if (cols.Length > 0)
             {
                 Debug.Log("탐지 됨");
-                target = cols[0].transform;
+                player = cols[0].transform;
                 return INode.STATE.SUCCESS;
             }
             return INode.STATE.FAIL;
         }
 
-        INode.STATE TraceAction()
-        {
-            if (Vector3.Distance(transform.position, target.position) >= 0.1f)
-            {
-                Debug.Log("추적 중");
-                transform.forward = (target.position - transform.position).normalized;
-                transform.Translate(Vector3.forward * Time.deltaTime, Space.Self);
-                return INode.STATE.RUN;
-            }
-            else
-                return INode.STATE.FAIL;
-        }
-
         INode.STATE ReturnAction()
         {
-            if (Vector3.Distance(transform.position, originPos) >= 0.1f)
+            if (Vector3.Distance(player.transform.position, transform.position) >= defectiveRange)
             {
-                Debug.Log("귀환 중");
-                transform.forward = (originPos - transform.position).normalized;
-                transform.Translate(Vector3.forward * Time.deltaTime, Space.Self);
+                Debug.Log("집가는 중");
+                navMesh.SetDestination(startPosition);
                 return INode.STATE.RUN;
             }
             else
                 return INode.STATE.FAIL;
-        }
-
-        INode.STATE IdleAction()
-        {
-            Debug.Log("대기 중");
-            if (navMesh.speed==0)
-            {
-                animator.SetTrigger("Idle");
-            }
-            return INode.STATE.RUN;
         }
         #endregion
 
         void Update()
         {
             rootNode.Evaluate();
+            animator.SetFloat("Move", navMesh.velocity.magnitude / navMesh.speed);
+            timePassed += Time.deltaTime;
+            newDestinationCoolTime -= Time.deltaTime;
         }
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, defectiveRange);
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, attackableRange);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, defectiveRange);
         }
     }
 }
