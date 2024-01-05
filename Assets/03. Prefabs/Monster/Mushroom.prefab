@@ -75,9 +75,9 @@ GameObject:
   - component: {fileID: 535702951195797787}
   - component: {fileID: 5876949206263575393}
   - component: {fileID: 651008383}
-  - component: {fileID: 651008384}
+  - component: {fileID: 1274236628}
   m_Layer: 9
-  m_Name: MushroomAngryPADefault
+  m_Name: Mushroom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,7 +135,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 1.5
+  m_StoppingDistance: 1.2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -143,7 +143,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &651008384
+--- !u!114 &1274236628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,15 +152,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 875073071404757921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc86f62009ffadb48bf48820ecf2b425, type: 3}
+  m_Script: {fileID: 11500000, guid: a2b26c5b484de1e42b48a80b3b0bb20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 0
-  damage: 0
-  health: 3
-  attackCD: 3
-  attackRange: 2
-  aggroRange: 6
+  newDestinationCoolTime: 0.5
+  attackCoolTime: 3
+  attackableRange: 2
+  defectiveRange: 6
   player: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1326775223490303571
