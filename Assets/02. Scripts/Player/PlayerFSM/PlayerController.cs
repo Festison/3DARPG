@@ -69,7 +69,7 @@ namespace Festison
         [HideInInspector] public Animator animator;
         [HideInInspector] public CharacterController controller;
         [HideInInspector] public PlayerInputsystem inputsystem;
-        [HideInInspector] public GameObject mainCamera;
+        public GameObject mainCamera;
 
         public StateMachine playerStateMachine;
         public DefaultState defaultState;
@@ -78,6 +78,7 @@ namespace Festison
         public CombatState combatState;
         public AttackState attackState;
         public DashAttackState dashAttackState;
+        public SpecialAttackState specialAttackState;
 
         private const float thersold = 0.01f;
 
@@ -95,14 +96,6 @@ namespace Festison
             }
         }
 
-
-        private void Awake()
-        {
-            if (mainCamera == null)
-            {
-                mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
-        }
 
         private void Start()
         {
@@ -126,6 +119,7 @@ namespace Festison
             combatState = new CombatState(this, playerStateMachine);
             attackState = new AttackState(this, playerStateMachine);
             dashAttackState = new DashAttackState(this, playerStateMachine);
+            specialAttackState = new SpecialAttackState(this, playerStateMachine);
 
             playerStateMachine.Initialize(defaultState);
         }

@@ -26,7 +26,7 @@ public class AttackRayCast : MonoBehaviour
 
             if (Physics.Raycast(transform.position, -transform.up, out hit, weaponLength, layerMask))
             {
-                if (hit.transform.TryGetComponent(out Enemy enemy) && !hasDealtDamage.Contains(hit.transform.gameObject))
+                if (hit.transform.TryGetComponent(out Monster enemy) && !hasDealtDamage.Contains(hit.transform.gameObject))
                 {
                     hasDealtDamage.Add(hit.transform.gameObject);
                 }

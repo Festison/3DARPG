@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : Character, IAttackable, IHitable
+public class Monster : Character, IAttackable, IHitable
 {
     [SerializeField] float health = 3;
 

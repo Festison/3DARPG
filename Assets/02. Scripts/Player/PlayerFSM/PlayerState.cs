@@ -11,6 +11,7 @@ public abstract class PlayerState
     public InputAction drawWeaponAction;
     public InputAction attackAction;
     public InputAction dashAttackAction;
+    public InputAction SpecialAttackAction;
 
     public PlayerState(PlayerController player, StateMachine stateMachine)
     {
@@ -21,6 +22,7 @@ public abstract class PlayerState
         drawWeaponAction = player.playerInput.actions["DrawWeapon"];
         attackAction = player.playerInput.actions["Attack"];
         dashAttackAction = player.playerInput.actions["DashAttack"];
+        SpecialAttackAction = player.playerInput.actions["SpecialAttack"];
     }
 
     public virtual void Enter()
@@ -148,7 +150,7 @@ public class RollState : PlayerState
 
 public class CombatState : PlayerState
 {
-    bool sheathWeapon, attack, dashAttack;
+    bool sheathWeapon, attack, dashAttack, specialAttack;
     public CombatState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -160,6 +162,7 @@ public class CombatState : PlayerState
         sheathWeapon = false;
         attack = false;
         dashAttack = false;
+        specialAttack = false;
     }
 
     public override void Update()
@@ -195,6 +198,15 @@ public class CombatState : PlayerState
         {
             player.animator.Play("DashAttack");
             stateMachine.ChangeState(player.dashAttackState);
+        }
+        if (SpecialAttackAction.triggered)
+        {
+            specialAttack = true;
+        }
+        if (specialAttack)
+        {
+            player.animator.Play("SpecialAttackReady");
+            stateMachine.ChangeState(player.specialAttackState);
         }
     }
 
@@ -274,7 +286,7 @@ public class DashAttackState : PlayerState
         player.animator.SetTrigger("CombatIdle");
         if (!player.animator.GetCurrentAnimatorStateInfo(1).IsName("DashAttack"))
         {
-            stateMachine.ChangeState(player.combatState);           
+            stateMachine.ChangeState(player.combatState);
         }
     }
 
@@ -284,6 +296,59 @@ public class DashAttackState : PlayerState
         player.animator.applyRootMotion = false;
     }
 }
+
+public class SpecialAttackState : PlayerState
+{
+    public SpecialAttackState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
+    {
+        this.player = player;
+        this.stateMachine = stateMachine;
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+    }
+
+    public override void Update()
+    {
+        if (!player.animator.GetCurrentAnimatorStateInfo(1).IsName("SpecialAttack") && !player.animator.GetCurrentAnimatorStateInfo(1).IsName("SpecialAttackReady"))
+        {
+            stateMachine.ChangeState(player.combatState);
+        }
+
+        RaycastHit hit;
+
+        int layerMask = 1 << 9;
+
+        Vector3 CameraCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
+        Ray ray = Camera.main.ScreenPointToRay(CameraCenter);
+
+        if (Physics.Raycast(ray, out hit, 100f, layerMask))
+        {
+            if (hit.transform.TryGetComponent<Monster>(out Monster Monster))
+            {
+                Debug.Log("레이 적에게 맞는중");
+                Vector3 dir = Monster.transform.position - player.transform.position;
+                dir.y = 0;
+                dir.Normalize();
+                Vector3 targetPos = Monster.transform.position + (dir * 1.2f);
+
+                player.transform.forward = dir;
+                player.transform.position = targetPos;
+            }
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+    }
+
+
+}
+
+
 
 
 
