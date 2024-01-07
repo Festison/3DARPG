@@ -70,6 +70,7 @@ namespace Festison
         [HideInInspector] public CharacterController controller;
         [HideInInspector] public PlayerInputsystem inputsystem;
         public GameObject mainCamera;
+        public GameObject virtualCamera;
 
         public StateMachine playerStateMachine;
         public DefaultState defaultState;

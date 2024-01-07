@@ -299,6 +299,7 @@ public class DashAttackState : PlayerState
 
 public class SpecialAttackState : PlayerState
 {
+    private float SpeciaAttackTime;
     public SpecialAttackState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -308,6 +309,8 @@ public class SpecialAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        SpeciaAttackTime = 0f;
+        player.virtualCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority -= 2;
     }
 
     public override void Update()
@@ -315,6 +318,13 @@ public class SpecialAttackState : PlayerState
         if (!player.animator.GetCurrentAnimatorStateInfo(1).IsName("SpecialAttack") && !player.animator.GetCurrentAnimatorStateInfo(1).IsName("SpecialAttackReady"))
         {
             stateMachine.ChangeState(player.combatState);
+        }
+
+        SpeciaAttackTime += Time.deltaTime;
+
+        if (SpeciaAttackTime>=5)
+        {
+            player.animator.SetTrigger("CombatIdle");
         }
 
         RaycastHit hit;
@@ -336,12 +346,15 @@ public class SpecialAttackState : PlayerState
 
                 player.transform.forward = dir;
                 player.transform.position = targetPos;
+                player.animator.SetTrigger("attack");
             }
         }
     }
 
     public override void Exit()
     {
+        player.virtualCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority += 2;
+        SpeciaAttackTime = 0f;
         base.Exit();
     }
 
