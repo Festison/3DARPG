@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Monster Data", menuName = "Scriptable Object/Monster Data", order = int.MaxValue)]
-public class MonsterData : ScriptableObject
+public class MonsterData : ScriptableObject,ISerializationCallbackReceiver
 {
     [SerializeField] private string monsterName;
-    public string ZombieName { get { return monsterName; } }
+    public string MonsterName { get { return monsterName; } }
 
-    [SerializeField] private int hp;
-    public int Hp { get { return hp; } }
+    [SerializeField] private float hp;
+    public float Hp { get { return hp; } set { hp = value; } }
+
+    [SerializeField] private float maxhp;
+    public float MaxHp { get { return maxhp; } set { maxhp = value; } }
 
     [SerializeField] private int damage;
-    public int Damage { get { return damage; } }
+    public float Damage { get { return damage; } }
+    public void OnBeforeSerialize()
+    {
+        Hp = MaxHp;
+    }
 
-    [SerializeField] private float sightRange;
-    public float SightRange { get { return sightRange; } }
-
-    [SerializeField] private float moveSpeed;
-    public float MoveSpeed { get { return moveSpeed; } }
+    public void OnAfterDeserialize()
+    {
+        
+    }
 }
+    

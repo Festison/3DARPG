@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackRayCast : MonoBehaviour
+public class AttackRayCast : MonoBehaviour, IAttackable
 {
     private bool canDealDamage;
-    private List<GameObject> hasDealtDamage;
+    [SerializeField] private List<GameObject> hasDealtDamage;
 
-    [SerializeField] float weaponLength;
-    [SerializeField] float weaponDamage;
+    [SerializeField] private float weaponLength;
+    [SerializeField] private float weaponDamage;
+
+    public float Damage => weaponDamage;
 
     void Start()
     {
@@ -18,20 +20,27 @@ public class AttackRayCast : MonoBehaviour
 
     void Update()
     {
-        if (canDealDamage)
-        {
-            RaycastHit hit;
+        //if (canDealDamage)
+        //{
+        //    RaycastHit hit;
 
-            int layerMask = 1 << 9;
+        //    int layerMask = 1 << 9;
 
-            if (Physics.Raycast(transform.position, -transform.up, out hit, weaponLength, layerMask))
-            {
-                if (hit.transform.TryGetComponent(out Monster enemy) && !hasDealtDamage.Contains(hit.transform.gameObject))
-                {
-                    hasDealtDamage.Add(hit.transform.gameObject);
-                }
-            }
-        }
+        //    if (Physics.Raycast(transform.position, -transform.up, out hit, weaponLength, layerMask))
+        //    {
+        //        if (hit.transform.TryGetComponent(out Monster monster) && !hasDealtDamage.Contains(hit.transform.gameObject))
+        //        {
+        //            monster.Hit(this);
+        //            hasDealtDamage.Add(hit.transform.gameObject);
+        //        }
+        //    }
+        //}
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<Monster>(out Monster monster) && canDealDamage)
+            monster.Hit(this);
     }
     public void StartDealDamage()
     {
@@ -47,5 +56,10 @@ public class AttackRayCast : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, transform.position - transform.up * weaponLength);
+    }
+
+    public void Attack(IHitable hitable)
+    {
+        hitable.Hp -= Damage;
     }
 }

@@ -1,87 +1,70 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.UI;
 
-public class Monster : Character, IAttackable, IHitable
+public class Monster : Character, IAttackable, IHitable, IDieable
 {
-    [SerializeField] float health = 3;
+    [SerializeField] [Tooltip("몬스터 스텟 SO")] private MonsterData monsterStatus;
+    [SerializeField] private float hp;
 
-    [Header("Combat")]
-    [SerializeField] float attackCoolTime = 3f;
-    [SerializeField] float attackableRange = 2f;
-    [SerializeField] float defectiveRange = 6f;
+    [Header("몬스터 UI")]
+    [SerializeField] private Image HpBarImage;
+    [SerializeField] private float lerpSpeed = 10;
 
-    public Transform player;
-    NavMeshAgent navMesh;
-    Animator animator;
-    float timePassed;
-    [SerializeField]  float newDestinationCD = 0.5f;
-    public Vector3 startPosition;
-    
+    [Header("몬스터 상태")]
+    [SerializeField] private bool isAttack;
 
-    void Start()
+    private Animator monAnimator;
+
+    public float Damage => monsterStatus.Damage;
+
+    public float Hp
     {
-        navMesh = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        player = player.transform;
-        startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-    }
-
-    void Update()
-    {
-        // 움직일 때
-        animator.SetFloat("Move", navMesh.velocity.magnitude / navMesh.speed);
-
-        if (player.Equals(null))
+        get => hp;
+        set
         {
-            return;
-        }
+            hp = value;
 
-        // 공격 범위
-        if (timePassed >= attackCoolTime)
-        {
-            // 공격 딜레이
-            if (Vector3.Distance(player.transform.position, transform.position) <= attackableRange)
+            if (hp <= 0)
             {
-                animator.SetInteger("AttackIndex", Random.Range(1, 4));
-                animator.SetTrigger("Attack");
-                timePassed = 0;
+                Die();
             }
         }
-        timePassed += Time.deltaTime;
-      
-        // 추적 범위 안에 들어왔을때
-        if (newDestinationCD <= 0 && Vector3.Distance(player.transform.position, transform.position) <= defectiveRange)
-        {
-            Debug.Log("추적중");
-            newDestinationCD = 0.5f;
-            navMesh.SetDestination(player.transform.position);
-        }
-
-        // 탐지 범위 보다 멀어졌을때
-        else if (Vector3.Distance(player.transform.position, transform.position) >= defectiveRange)
-        {
-            Debug.Log("집가는 중");
-            navMesh.SetDestination(startPosition);
-        }
-        newDestinationCD -= Time.deltaTime;
-
-        transform.LookAt(player.transform);
     }
 
-    public void HitVFX(Vector3 hitPosition)
+    public float MaxHp { get => monsterStatus.MaxHp; set => monsterStatus.MaxHp = value; }
+
+    private void Start()
     {
-        // GameObject hit = Instantiate(hitVFX, hitPosition, Quaternion.identity);
-        // Destroy(hit, 3f);
+        monAnimator = GetComponent<Animator>();
+        hp = monsterStatus.Hp;
     }
 
-    private void OnDrawGizmos()
+    private void Update()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackableRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, defectiveRange);
+        HpLerp();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.TryGetComponent<Player>(out Player player) && isAttack)
+            player.Hit(this);
+    }
+
+    public void OnMonsterAttack()
+    {
+        isAttack = true;
+    }
+
+    public void OnMonsterAttackEnd()
+    {
+        isAttack = false;
+    }
+
+    public void HpLerp()
+    {
+        HpBarImage.fillAmount = Mathf.Lerp(HpBarImage.fillAmount, Hp / MaxHp, Time.deltaTime * lerpSpeed);
     }
 
     public void Hit(IAttackable attackable)
@@ -91,6 +74,17 @@ public class Monster : Character, IAttackable, IHitable
 
     public void Attack(IHitable hitable)
     {
-        Damage -= hitable.Hp;
+        hitable.Hp -= Damage;
+    }
+
+    public void SpecialHit(float Damage)
+    {
+        Hp -= Damage;
+    }
+
+    public void Die()
+    {
+        monAnimator.SetTrigger("Die");
+        Destroy(this.gameObject, 1);
     }
 }

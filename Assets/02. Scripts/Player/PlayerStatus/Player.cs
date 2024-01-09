@@ -1,19 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Festison;
+using System.Reflection;
 
-public class Player : MonoBehaviour
+public class Player : Character,IHitable,IDieable
 {
-    PlayerController player;
 
-    public void Start()
+    [SerializeField] private float hp=500;
+    [SerializeField] private float maxHp=500;
+    [SerializeField] private float lerpSpeed = 10;
+
+    public float Damage => throw new System.NotImplementedException();
+
+    public float Hp { get => hp;
+        set
+        {
+            hp = value;
+
+            if (hp<=0)
+            {
+                Die();
+            }
+        }
+        }
+
+    private void Update()
     {
-        player = GetComponent<PlayerController>();
+        PlayerHpLerp();
     }
+    
 
-    public void Update()
+    public void Die()
     {
         
+    }
+
+    public void PlayerHpLerp()
+    {
+        UIManager.Instance.playerHpImg.fillAmount = Mathf.Lerp(UIManager.Instance.playerHpImg.fillAmount, Hp / maxHp, Time.deltaTime * lerpSpeed);
+        UIManager.Instance.playerHpText.text = (Hp + " / " + maxHp);
+    }
+
+    public void Hit(IAttackable attackable)
+    {
+        Hp -= attackable.Damage;
     }
 }

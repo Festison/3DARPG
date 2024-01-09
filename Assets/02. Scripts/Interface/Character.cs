@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IDieable
+{
+    public void Die();
+}
+
 public interface IHitable
 {
     public float Hp { get; set; }
@@ -16,31 +21,5 @@ public interface IAttackable
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private float hp;
-    [SerializeField] private float damage;
-
-    public float Hp
-    {
-        get
-        {
-            return hp;
-        }
-        set
-        {
-            hp = value;
-        }
-    }
-
-    public float Damage
-    {
-        get
-        {
-            return damage;
-        }
-        set
-        {
-            damage = value;
-        }
-    }
     
 }

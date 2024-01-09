@@ -322,7 +322,7 @@ public class SpecialAttackState : PlayerState
 
         SpeciaAttackTime += Time.deltaTime;
 
-        if (SpeciaAttackTime>=5)
+        if (SpeciaAttackTime>=5f)
         {
             player.animator.SetTrigger("CombatIdle");
         }
@@ -336,16 +336,17 @@ public class SpecialAttackState : PlayerState
 
         if (Physics.Raycast(ray, out hit, 100f, layerMask))
         {
-            if (hit.transform.TryGetComponent<Monster>(out Monster Monster))
+            if (hit.transform.TryGetComponent<Monster>(out Monster monster))
             {
                 Debug.Log("레이 적에게 맞는중");
-                Vector3 dir = Monster.transform.position - player.transform.position;
+                Vector3 dir = monster.transform.position - player.transform.position;
                 dir.y = 0;
                 dir.Normalize();
-                Vector3 targetPos = Monster.transform.position + (dir * 1.2f);
+                Vector3 targetPos = monster.transform.position + (dir * 1.2f);
 
                 player.transform.forward = dir;
                 player.transform.position = targetPos;
+                monster.SpecialHit(15);
                 player.animator.SetTrigger("attack");
             }
         }
