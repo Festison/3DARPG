@@ -10,8 +10,6 @@ public class Player : Character,IHitable,IDieable
     [SerializeField] private float maxHp=500;
     [SerializeField] private float lerpSpeed = 10;
 
-    public float Damage => throw new System.NotImplementedException();
-
     public float Hp { get => hp;
         set
         {

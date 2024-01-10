@@ -10,9 +10,9 @@ public class MonsterSpawnPoint : MonoBehaviour
     {
         monsterPool = MonsterObjPool.Instance;
     }
-    private void FixedUpdate()
+    private void Update()
     {
-        
+       MushRommCreate();
     }
 
     public void MushRommCreate()

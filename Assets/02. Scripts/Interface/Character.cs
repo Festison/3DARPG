@@ -15,7 +15,7 @@ public interface IHitable
 
 public interface IAttackable
 {
-    public float Damage { get; }
+    public float Damage { get; set; }
     public void Attack(IHitable hitable);
 }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Reflection;
 using Festison;
 
 public abstract class PlayerState
@@ -300,6 +301,7 @@ public class DashAttackState : PlayerState
 public class SpecialAttackState : PlayerState
 {
     private float SpeciaAttackTime;
+    Weapon weapon;
     public SpecialAttackState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
         this.player = player;
@@ -309,6 +311,8 @@ public class SpecialAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        weapon= new Weapon();
+        weapon.Damage = weapon.Damage * 4f;
         SpeciaAttackTime = 0f;
         player.virtualCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority -= 2;
     }
@@ -346,7 +350,7 @@ public class SpecialAttackState : PlayerState
 
                 player.transform.forward = dir;
                 player.transform.position = targetPos;
-                monster.SpecialHit(15);
+                monster.Hit(weapon);
                 player.animator.SetTrigger("attack");
             }
         }
@@ -356,6 +360,7 @@ public class SpecialAttackState : PlayerState
     {
         player.virtualCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority += 2;
         SpeciaAttackTime = 0f;
+        weapon.Damage = weapon.Damage * 0.25f;
         base.Exit();
     }
 

@@ -129,6 +129,7 @@ namespace BT
         [Tooltip("플레이어 위치")] [SerializeField] private Transform player = null;
         [Tooltip("몬스터 시작 포인트")] [SerializeField] private Vector3 startPosition;
 
+
         void Start()
         {
             navMesh = GetComponent<NavMeshAgent>();
@@ -200,12 +201,12 @@ namespace BT
         }
 
         INode.STATE PlayerTargetAction()
-        {          
+        {
             if (newDestinationCoolTime <= 0 && Vector3.Distance(player.transform.position, transform.position) <= defectiveRange)
             {
                 Debug.Log("근거리 적 타겟 중");
                 newDestinationCoolTime = 0.5f;
-                navMesh.SetDestination(player.transform.position);                
+                navMesh.SetDestination(player.transform.position);
                 return INode.STATE.RUN;
             }
             return INode.STATE.RUN;

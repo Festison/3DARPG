@@ -30,10 +30,10 @@ public class EquipmentSystem : MonoBehaviour
 
     public void StartDealDamage()
     {
-        currentWeaponInHand.GetComponentInChildren<AttackRayCast>().StartDealDamage();
+        currentWeaponInHand.GetComponentInChildren<Weapon>().StartDealDamage();
     }
     public void EndDealDamage()
     {
-        currentWeaponInHand.GetComponentInChildren<AttackRayCast>().EndDealDamage();
+        currentWeaponInHand.GetComponentInChildren<Weapon>().EndDealDamage();
     }
 }

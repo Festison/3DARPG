@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 6012126117040076713}
   - component: {fileID: 2676559753501130154}
   - component: {fileID: 5905376384110110442}
+  - component: {fileID: 2030182069516565828}
   m_Layer: 9
   m_Name: Mushroom
   m_TagString: Untagged
@@ -361,6 +362,7 @@ MonoBehaviour:
   HpBarImage: {fileID: 8529413852279612106}
   lerpSpeed: 10
   isAttack: 0
+  hitEffect: {fileID: 5024009746357069194, guid: ec3f674830402cc45bce805cf6493db7, type: 3}
 --- !u!54 &2676559753501130154
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -391,6 +393,19 @@ CapsuleCollider:
   m_Height: 1.3734095
   m_Direction: 1
   m_Center: {x: 0, y: 0.4690391, z: -0.017394423}
+--- !u!65 &2030182069516565828
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875073071404757921}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1.1234874, y: 0.5390309, z: 1.1139523}
+  m_Center: {x: -0.007276833, y: 0.37436932, z: 0.22018641}
 --- !u!1 &1326775223490303571
 GameObject:
   m_ObjectHideFlags: 0

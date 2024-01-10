@@ -16,8 +16,9 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     [SerializeField] private bool isAttack;
 
     private Animator monAnimator;
+    [SerializeField] private GameObject hitEffect;
 
-    public float Damage => monsterStatus.Damage;
+    public float Damage { get => monsterStatus.Damage; set => monsterStatus.Damage = value; }
 
     public float Hp
     {
@@ -46,9 +47,9 @@ public class Monster : Character, IAttackable, IHitable, IDieable
         HpLerp();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.TryGetComponent<Player>(out Player player) && isAttack)
+        if (other.TryGetComponent<Player>(out Player player))
             player.Hit(this);
     }
 
@@ -70,6 +71,12 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     public void Hit(IAttackable attackable)
     {
         Hp -= attackable.Damage;
+        HitVFX();
+    }
+
+    public void HitVFX()
+    {
+        Instantiate(hitEffect, transform.position + Vector3.up, Quaternion.identity);
     }
 
     public void Attack(IHitable hitable)
@@ -77,14 +84,10 @@ public class Monster : Character, IAttackable, IHitable, IDieable
         hitable.Hp -= Damage;
     }
 
-    public void SpecialHit(float Damage)
-    {
-        Hp -= Damage;
-    }
-
     public void Die()
     {
         monAnimator.SetTrigger("Die");
         Destroy(this.gameObject, 1);
     }
+
 }
