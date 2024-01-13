@@ -128,7 +128,6 @@ namespace Festison
         private void Update()
         {
             GroundedCheck();
-            Animating = TryGetComponent(out animator);
 
             playerStateMachine.currentState.Update();
         }

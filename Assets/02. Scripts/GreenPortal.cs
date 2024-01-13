@@ -2,13 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public abstract class SpawnStrategy
-{
-    public abstract void Spawn();
-}
-
-public class MonsterSpawnPoint : MonoBehaviour
+public class GreenPortal : MonoBehaviour
 {
     private void OnTriggerStay(Collider other)
     {
@@ -16,8 +10,8 @@ public class MonsterSpawnPoint : MonoBehaviour
         {
             if (other.TryGetComponent<Player>(out Player player))
             {
-                MonsterObjPool.Instance.PopMonster("Mushroom", Quaternion.identity);
-            }           
-        }    
+                MonsterObjPool.Instance.PopMonster("Dragon", Quaternion.identity);
+            }
+        }
     }
 }

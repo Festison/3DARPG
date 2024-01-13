@@ -19,7 +19,5 @@ public interface IAttackable
     public void Attack(IHitable hitable);
 }
 
-public class Character : MonoBehaviour
-{
-    
-}
+public abstract class Character : MonoBehaviour { }
+

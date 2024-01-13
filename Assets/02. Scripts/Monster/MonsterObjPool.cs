@@ -13,10 +13,9 @@ public class MonsterObjPool : SingleTon<MonsterObjPool>
 		public int size;
 	}
 	
-	
 	[Tooltip("여러 몬스터를 담기 위한 내부 클래스")] [SerializeField] private Pool[] pools;
 	// 여러 몬스터를 큐에 담기 위해 다중 오브젝트 풀링을 사용할 딕셔너리
-	private Dictionary<string, Queue<GameObject>> poolDictionary;
+	[SerializeField] public Dictionary<string, Queue<GameObject>> poolDictionary;
 
 	private void Start()
 	{
@@ -52,7 +51,7 @@ public class MonsterObjPool : SingleTon<MonsterObjPool>
 	/// <param name="position"></param>
 	/// <param name="rotation"></param>
 	/// <returns></returns>
-	public GameObject PopMonster(string name, Vector3 position, Quaternion rotation)
+	public GameObject PopMonster(string name, Quaternion rotation)
     {
         if (!poolDictionary.ContainsKey(name))
 			return null;
@@ -60,8 +59,6 @@ public class MonsterObjPool : SingleTon<MonsterObjPool>
 		GameObject monster = poolDictionary[name].Dequeue();
 
 		monster.SetActive(true);
-		monster.transform.position = position;
-		monster.transform.rotation = rotation;
 
 		poolDictionary[name].Enqueue(monster);
 

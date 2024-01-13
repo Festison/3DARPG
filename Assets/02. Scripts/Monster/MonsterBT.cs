@@ -126,7 +126,7 @@ namespace BT
         [Tooltip("몬스터 탐지 범위")] [SerializeField] private float defectiveRange = 6f;
 
         [Header("몬스터가 알아야할 정보")]
-        [Tooltip("플레이어 위치")] [SerializeField] private Transform player = null;
+        [Tooltip("플레이어 위치")] [SerializeField] private Transform player;
         [Tooltip("몬스터 시작 포인트")] [SerializeField] private Vector3 startPosition;
 
 

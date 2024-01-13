@@ -7,6 +7,6 @@ public class PlaygroundScene : MonoBehaviour
 {
     void Start()
     {
-        LoadingSceneManager.Instance.ChangeScene("Playground");
+        LoadingSceneManager.Instance.ChangeScene("PracticeScene");
     }
 }

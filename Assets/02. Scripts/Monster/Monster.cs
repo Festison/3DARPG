@@ -36,6 +36,14 @@ public class Monster : Character, IAttackable, IHitable, IDieable
 
     public float MaxHp { get => monsterStatus.MaxHp; set => monsterStatus.MaxHp = value; }
 
+    private int xPos;
+    private int zPos;
+    private void OnEnable()
+    {
+        xPos = Random.Range(1, 20);
+        zPos = Random.Range(1, 20);
+        transform.position = new Vector3(xPos, 0, zPos);
+    }
     private void Start()
     {
         monAnimator = GetComponent<Animator>();
@@ -71,6 +79,12 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     public void Hit(IAttackable attackable)
     {
         Hp -= attackable.Damage;
+        HitVFX();
+    }
+
+    public void Hit(float Damage)
+    {
+        Hp -= Damage;
         HitVFX();
     }
 
