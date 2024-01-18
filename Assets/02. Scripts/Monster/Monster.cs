@@ -38,11 +38,19 @@ public class Monster : Character, IAttackable, IHitable, IDieable
 
     private int xPos;
     private int zPos;
+
+    [SerializeField] Vector3 monsterspawn;
+
     private void OnEnable()
     {
         xPos = Random.Range(1, 20);
         zPos = Random.Range(1, 20);
         transform.position = new Vector3(xPos, 0, zPos);
+    }
+
+    private void OnDisable()
+    {
+        gameObject.transform.position = monsterspawn;
     }
 
     private void Start()
@@ -103,7 +111,6 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     {
         monAnimator.SetTrigger("Die");
         Destroy(this.gameObject, 1);
-        MonsterObjPool.Instance.ReturnPool(this.gameObject);
     }
 
 }

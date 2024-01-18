@@ -16,6 +16,7 @@ public class MonsterData : ScriptableObject,ISerializationCallbackReceiver
 
     [SerializeField] private float damage;
     public float Damage { get { return damage; } set { damage = value; } }
+
     public void OnBeforeSerialize()
     {
         Hp = MaxHp;
