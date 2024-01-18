@@ -5,14 +5,14 @@ using Festison;
 
 public abstract class PlayerState
 {
-    public PlayerController player;
-    public StateMachine stateMachine;
+    protected PlayerController player;
+    protected StateMachine stateMachine;
 
-    public InputAction rollAction;
-    public InputAction drawWeaponAction;
-    public InputAction attackAction;
-    public InputAction dashAttackAction;
-    public InputAction SpecialAttackAction;
+    protected InputAction rollAction;
+    protected InputAction drawWeaponAction;
+    protected InputAction attackAction;
+    protected InputAction dashAttackAction;
+    protected InputAction SpecialAttackAction;
 
     public PlayerState(PlayerController player, StateMachine stateMachine)
     {

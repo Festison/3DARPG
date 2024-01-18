@@ -44,6 +44,7 @@ public class Monster : Character, IAttackable, IHitable, IDieable
         zPos = Random.Range(1, 20);
         transform.position = new Vector3(xPos, 0, zPos);
     }
+
     private void Start()
     {
         monAnimator = GetComponent<Animator>();
@@ -102,6 +103,7 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     {
         monAnimator.SetTrigger("Die");
         Destroy(this.gameObject, 1);
+        MonsterObjPool.Instance.ReturnPool(this.gameObject);
     }
 
 }

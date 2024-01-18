@@ -2,65 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public enum MonsterType
-{
-    MushRoom,
-    Dragon
-}
-
 [System.Serializable]
-public abstract class SpawnStrategy : MonoBehaviour
+public abstract class SpawnStrategy
 {
-    public abstract void OnTriggerStay(Collider other);
+    public enum MonsterType
+    {
+        MushRoom,
+        Dragon
+    }
+    public static class Factory
+    {
+        public static SpawnStrategy Create(MonsterType monstertype)
+        {
+            switch (monstertype)
+            {
+                case MonsterType.MushRoom:
+                    return new MushRoomSpawnStrategy();
+                case MonsterType.Dragon:
+                    return new DragonSpawnStrategy();
+                default:
+                    return null;
+            }
+        }
+    }
 }
 
 [System.Serializable]
 public class MushRoomSpawnStrategy : SpawnStrategy
 {
-    public override void OnTriggerStay(Collider other)
-    {
-        Debug.Log("Ãæµ¹Áß");
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (other.TryGetComponent<Player>(out Player player))
-            {
-                MonsterObjPool.Instance.PopMonster("Mushroom", Quaternion.identity);
-            }
-        }
-    }
+   
 }
 
 [System.Serializable]
 public class DragonSpawnStrategy : SpawnStrategy
-{
-    public override void OnTriggerStay(Collider other)
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (other.TryGetComponent<Player>(out Player player))
-            {
-                MonsterObjPool.Instance.PopMonster("Dragon", Quaternion.identity);
-            }
-        }
-    }
+{   
 }
 
-public class MonsterSpawnPoint : MonoBehaviour
+public abstract class MonsterSpawnPoint : MonoBehaviour
 {
-    [SerializeField] private MonsterType monsterType;
-    [SerializeField] private SpawnStrategy spawnMonster;
+    [SerializeField] public SpawnStrategy spawnMonster;
 
     private void Start()
     {
-        switch (monsterType)
-        {
-            case MonsterType.MushRoom:
-                spawnMonster = new MushRoomSpawnStrategy();
-                break;
-            case MonsterType.Dragon:
-                spawnMonster = new DragonSpawnStrategy();
-                break;
-        }
+        Init();
     }
+
+    public abstract void Init();
 }

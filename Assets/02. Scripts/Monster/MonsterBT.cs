@@ -130,11 +130,14 @@ namespace BT
         [Tooltip("몬스터 시작 포인트")] [SerializeField] private Vector3 startPosition;
 
 
+        private void OnEnable()
+        {
+            startPosition = new Vector3(transform.position.x, 0, transform.position.z);
+        }
         void Start()
         {
             navMesh = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
-            startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            animator = GetComponent<Animator>();          
             SetBT();
         }
 
