@@ -20,4 +20,3 @@ public interface IAttackable
 }
 
 public abstract class Character : MonoBehaviour { }
-

@@ -122,7 +122,7 @@ namespace Festison
             dashAttackState = new DashAttackState(this, playerStateMachine);
             specialAttackState = new SpecialAttackState(this, playerStateMachine);
 
-            playerStateMachine.Initialize(defaultState);
+            playerStateMachine.StateInit(defaultState);
         }
 
         private void Update()

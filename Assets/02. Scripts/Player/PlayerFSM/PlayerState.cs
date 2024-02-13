@@ -28,12 +28,10 @@ public abstract class PlayerState
 
     public virtual void Enter()
     {
-        Debug.Log("Enter State: " + this.ToString());
     }
 
     public virtual void Update()
     {
-        Debug.Log("상태 실행중" + this.ToString());
         player.Move();                                      // 움직이기
         player.JumpAndGravity();                            // 점프하기
     }

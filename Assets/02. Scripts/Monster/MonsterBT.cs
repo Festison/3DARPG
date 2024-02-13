@@ -176,7 +176,6 @@ namespace BT
 
         INode.STATE DefaultAttackAction()
         {
-            Debug.Log("기본 공격 중");
             animator.SetInteger("AttackIndex", UnityEngine.Random.Range(1, 4));
             animator.SetTrigger("Attack");
             timePassed = 0;
@@ -192,11 +191,8 @@ namespace BT
             {
                 // 공격 딜레이
                 if (Vector3.Distance(player.transform.position, transform.position) <= attackableRange)
-                {
                     return INode.STATE.SUCCESS;
-                }
             }
-
             return INode.STATE.FAIL;
         }
 
@@ -204,7 +200,6 @@ namespace BT
         {
             if (newDestinationCoolTime <= 0 && Vector3.Distance(player.transform.position, transform.position) <= defectiveRange)
             {
-                Debug.Log("근거리 적 타겟 중");
                 newDestinationCoolTime = 0.5f;
                 navMesh.SetDestination(player.transform.position);
                 return INode.STATE.RUN;
@@ -217,7 +212,6 @@ namespace BT
             Collider[] cols = Physics.OverlapSphere(transform.position, defectiveRange, LayerMask.GetMask("Player"));
             if (cols.Length > 0)
             {
-                Debug.Log("탐지 됨");
                 player = cols[0].transform;
                 return INode.STATE.SUCCESS;
             }
@@ -228,7 +222,6 @@ namespace BT
         {
             if (Vector3.Distance(player.transform.position, transform.position) >= defectiveRange)
             {
-                Debug.Log("집가는 중");
                 navMesh.SetDestination(startPosition);
                 return INode.STATE.RUN;
             }

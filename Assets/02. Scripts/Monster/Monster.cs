@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Monster : Character, IAttackable, IHitable, IDieable
 {
-    [SerializeField] [Tooltip("몬스터 스텟 SO")] private MonsterData monsterStatus;
+    
     [SerializeField] private float hp;
 
     [Header("몬스터 UI")]
@@ -18,6 +18,7 @@ public class Monster : Character, IAttackable, IHitable, IDieable
     private Animator monAnimator;
     [SerializeField] private GameObject hitEffect;
 
+    [SerializeField] [Tooltip("몬스터 스텟 SO")] private MonsterData monsterStatus;
     public float Damage { get => monsterStatus.Damage; set => monsterStatus.Damage = value; }
 
     public float Hp

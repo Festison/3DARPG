@@ -2,7 +2,7 @@ public class StateMachine
 {
     public PlayerState currentState;
 
-    public void Initialize(PlayerState startingState)
+    public void StateInit(PlayerState startingState)
     {
         currentState = startingState;
         startingState.Enter();
