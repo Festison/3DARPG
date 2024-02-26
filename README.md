@@ -6,9 +6,10 @@
  - 개발규모 : 1인개발
 
 # 데모 동영상
-
 > Youtube
-
-https://youtu.be/bDbR7Q208qs
+[<img width="1000" alt="화면_캡쳐" src="https://github.com/Festison/3DARPG/assets/105289311/dccb9bad-1d7d-4d32-8daa-8ddd5a1134b2">](https://youtu.be/bDbR7Q208qs)
 
 # 기술 설명서
+<img width="1000" alt="Untitled" src="https://github.com/Festison/3DARPG/assets/105289311/0cf8dc0d-0567-43a1-bceb-f7a18ef2874e">
+
+## Player 구조
