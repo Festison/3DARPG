@@ -386,7 +386,8 @@ public class SpecialAttackState : PlayerState
 ```
 
 ## PlayerEffect
-<img width="600" alt="Untitled (1)" src="https://github.com/Festison/3DARPG/assets/105289311/4649370b-53eb-4727-ba5a-f239b7efb65d">
 - 애니메이션과 애니메이션 이벤트를 사용해 상태 전환
 - 프로퍼티를 이용한 이펙트 구현
 - 포스트 프로세싱을 이용한 필살기 후 처리 구현
+<img width="600" alt="Untitled (1)" src="https://github.com/Festison/3DARPG/assets/105289311/4649370b-53eb-4727-ba5a-f239b7efb65d">
+
